@@ -7,6 +7,7 @@ const { Node } = require('../extensions/list-tree.js');
 * using Node from extensions
 */
 class BinarySearchTree {
+  rootTree;
 
   constructor() {
     this.rootTree = null
@@ -47,19 +48,50 @@ class BinarySearchTree {
     return this.returnNode(this.rootTree, data)
   }
 
-  remove(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  removeNode(node, data) {
+    if (!node) return null;
+
+    if (data < node.data) node.left = this.removeNode(node.left, data);
+    else if (data > node.data) node.right = this.removeNode(node.right, data);
+    else {
+      if (!node.left && !node.right) return null;
+      if (!node.left) return node.right;
+      if (!node.right) return node.left;
+
+      let minFromRight = node.right;
+
+      while (minFromRight.left) {
+        minFromRight = minFromRight.left;
+      }
+
+      node.data = minFromRight.data;
+      node.right = this.removeNode(node.right, minFromRight.data);
+    }
+
+    return node;
+  }
+
+  remove(data) {
+    this.rootTree = this.removeNode(this.rootTree, data)
+  }
+
+  findValue(side) {
+    if (!this.rootTree) return null;
+    let current = this.rootTree;
+
+    while (current[side]) {
+      current = current[side];
+    }
+
+    return current.data;
   }
 
   min() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    return this.findValue('left');
   }
 
   max() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    return this.findValue('right');
   }
 }
 
